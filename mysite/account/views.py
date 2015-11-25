@@ -4,14 +4,14 @@ from django.shortcuts import render
 from django import forms
 from django .shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
-from django import RequestContext
+from django.template import RequestContext
 from account.models import User
 
 # Create your views here.
 
 class UserFrom(forms.Form):
     username = forms.CharField(label='Username: ', max_length=100)
-    password = forms.CrarField(label='Password: ', widget=forms.PasswordInput())
+    password = forms.CharField(label='Password: ', widget=forms.PasswordInput())
     email = forms.EmailField(label='Email: ')
 
 def register(request):
