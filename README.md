@@ -1,2 +1,2 @@
 # django_polls_web
-django官方文档的代码。
+学习django时的代码。
