@@ -9,14 +9,18 @@ from account.models import User
 
 # Create your views here.
 
-class UserFrom(forms.Form):
+class RegisterFrom(forms.Form):
     username = forms.CharField(label='Username: ', max_length=100)
     password = forms.CharField(label='Password: ', widget=forms.PasswordInput())
     email = forms.EmailField(label='Email: ')
 
+class LoginForm(forms.Form):
+    username = forms.CharField(label='Username', max_length=100)
+    password = forms.CharField(label='Password', widget=forms.PasswordInput())
+
 def register(request):
     if request.method == 'POST':
-        uf = UserFrom(request.POST)
+        uf = RegisterFrom(request.POST)
         if uf.is_valid():
             #get post information
             username = uf.cleaned_data['username']
@@ -29,8 +33,22 @@ def register(request):
             user.email = email
             user.save()
             #return successed page
-            return render_to_response('success.html', {'username': username})
+            return render_to_response('successRegister.html', {'username': username})
     else:
-        uf = UserFrom()
+        uf = RegisterFrom()
     return render_to_response('register.html', {'uf': uf})
 
+def login(request):
+    if request.method == 'POST':
+        uf = LoginForm(request.POST)
+        if uf.is_valid():
+            username = uf.cleaned_data['username']
+            password = uf.cleaned_data['password']
+            user = User.objects.filter(username__exact = username, password__exact = password)
+            if user:
+                return render_to_response('successLogin.html', {'username': username})
+            else:
+                return HttpResponseRedirect('/login/')
+    else:
+        uf = LoginForm()
+    return render_to_response('login.html', {'uf': uf})
