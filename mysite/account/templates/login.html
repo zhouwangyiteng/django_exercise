@@ -17,6 +17,7 @@
     <body>
         <h1>登陆页面：</h1>
         <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
             {{uf.as_p}}
             <input type="submit" value="ok" />
         </form>

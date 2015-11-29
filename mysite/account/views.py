@@ -36,7 +36,7 @@ def register(request):
             return render_to_response('successRegister.html', {'username': username})
     else:
         uf = RegisterFrom()
-    return render_to_response('register.html', {'uf': uf})
+    return render_to_response('register.html', {'uf': uf}, context_instance=RequestContext(request))
 
 def login(request):
     if request.method == 'POST':
@@ -46,9 +46,20 @@ def login(request):
             password = uf.cleaned_data['password']
             user = User.objects.filter(username__exact = username, password__exact = password)
             if user:
-                return render_to_response('successLogin.html', {'username': username})
+                response = HttpResponseRedirect('/account/index/')
+                response.set_cookie('username', username, 3600)
+                return response
             else:
-                return HttpResponseRedirect('/login/')
+                return HttpResponseRedirect('/account/login/')
     else:
         uf = LoginForm()
-    return render_to_response('login.html', {'uf': uf})
+    return render_to_response('login.html', {'uf': uf}, context_instance=RequestContext(request))
+
+def index(request):
+    username = request.COOKIES.get('username', '')
+    return render_to_response('index.html', {'username': username})
+
+def logout(request):
+    response = HttpResponse('Logout !!!')
+    response.delete_cookie('username')
+    return response
